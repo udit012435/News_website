@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+        .div{
+            background-color: rgb(217, 248, 250);
+            padding: 60px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            transition: all 2s ease-in-out;
+        }
+        .card1{
+            margin:10px;
+            transition:all 2s ease-in-out;
+        }
+        @media only screen and ((min-width : 720px) and (max-width :1050px)){
+            .div{
+                background-color: rgb(213, 187, 238);
+                transition: all 2s ease-in-out;
+            }
+            .card1{
+                transition: all 2s ease-in-out;
+            }
+        }
+        @media screen and (max-width :710px) {
+            .div{
+                padding:20px !important;
+            }
+            .card1{
+                width: 22rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#" onclick="window.location.reload()">News App</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link " aria-current="page" href="#" onclick="apicall('general')">General</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="apicall('entertainment')">Entertainment</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="apicall('health')">Health</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="apicall('business')">Business</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#"onclick="apicall('sports')">Sports</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#"onclick="apicall('technology')">Technology</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#"onclick="apicall('science')">Science</a>
+              </li>
+            </ul>
+            <form class="d-flex" role="search">
+              <input class="form-control me-2" value="" id="search" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" onclick="searchdata()">Go</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <div class="container-fluid col-md-12 div" id="container">
+      </div>
+      <script>
+         let search = document.getElementById("search");
+               function searchdata(){
+               let val = search.value;
+               apicall(val);
+                console.log(search.value);
+            }
+            // import api_key from "./api.js";
+            async function apicall(category){
+                let url = `https://newsapi.org/v2/top-headlines?country=in&category=${category ? category : "general"}&apiKey=a3b6a5f4cc344b9eb13838dda14024d6`;
+                let fetchdata = await fetch(url);
+                let data = await fetchdata.json();
+                console.log(data);
+                let arraydata = data.articles;
+                let mapfunction = arraydata.map((val)=>{
+                    return val.urlToImage;
+                })
+                console.log(mapfunction);
+                let container = document.getElementById("container");
+                container.innerHTML = arraydata.map((val)=>{
+                    return `
+                                <div class="card card1" style="width:20rem;">
+                            <img src="${val.urlToImage}" style="height:200px;" class="card-img-top" alt="...">
+                            <div class="card-body">
+                            <h5 class="card-title">${val.title ? val.title.slice(0,50) : "tile not available"}...</h5>
+                            <p class="card-text">${val.description ? val.description.substr(0,100) : "Description not available"}....</p>
+                            <a href="${val.url}" class="btn btn-dark">Read more.....</a>
+                        </div>
+                        </div>
+                `;
+                })
+            }
+            apicall();
+            let link = document.getElementsByClassName("nav-link");
+            function news(){
+                console.log(link.item(1));
+            }
+            
+        </script>
+</body>
+</html>
